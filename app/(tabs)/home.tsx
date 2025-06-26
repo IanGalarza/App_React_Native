@@ -41,15 +41,18 @@ export default function HomeScreen() {
   );
 
   const renderGame = ({ item }: { item: Game }) => (
-    <TouchableOpacity onPress={() => goToDetail(item.id)} style={styles.listItem}>
-      <Image source={{ uri: item.background_image }} style={styles.listImage} />
-      <View style={styles.listTextContainer}>
-        <Text style={styles.gameTitle}>{item.name}</Text>
-        <Text style={styles.gameInfo}>Rating: {item.rating.toFixed(1)}</Text>
-        <Text style={styles.gameInfo}>Released: {item.released || 'N/A'}</Text>
+    <TouchableOpacity onPress={() => goToDetail(item.id)} style={styles.card}>
+      <View style={styles.listItem}>
+        <Image source={{ uri: item.background_image }} style={styles.listImage} />
+        <View style={styles.listTextContainer}>
+          <Text style={styles.gameTitle}>{item.name}</Text>
+          <Text style={styles.gameInfo}>Rating: {item.rating.toFixed(1)}</Text>
+          <Text style={styles.gameInfo}>Released: {item.released || 'N/A'}</Text>
+        </View>
       </View>
     </TouchableOpacity>
   );
+
 
 
   const ListHeader = () => {
@@ -110,7 +113,7 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#f0f0f5',
   },
   title: {
     fontSize: 28,
@@ -132,6 +135,17 @@ const styles = StyleSheet.create({
   carousel: {
     marginBottom: 20,
   },
+  card: {
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    padding: 12,
+    marginBottom: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+  },
   carouselItem: {
     width: 120,
     marginRight: 12,
@@ -149,7 +163,7 @@ const styles = StyleSheet.create({
   listItem: {
     flexDirection: 'row',
     marginBottom: 12,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#fff',
     borderRadius: 8,
     overflow: 'hidden',
   },
