@@ -1,8 +1,38 @@
 import { IconSymbol } from '@/components/ui/IconSymbol';
-import React from 'react';
-import { Image, StyleSheet, Text, View } from 'react-native';
+import * as ImagePicker from 'expo-image-picker';
+import React, { useState } from 'react';
+import {
+  Alert,
+  Image,
+  Pressable,
+  StyleSheet,
+  Text,
+  View
+} from 'react-native';
 
 export default function ProfileScreen() {
+  const [image, setImage] = useState('https://static.vecteezy.com/system/resources/previews/034/371/675/non_2x/person-silhouette-icon-user-icon-vector.jpg');
+
+  const pickImage = async () => {
+    // Pedir permisos si es necesario
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== 'granted') {
+      Alert.alert('Permission denied', 'Permission to access media library is required!');
+      return;
+    }
+
+    // Elegir imagen
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      quality: 1,
+      allowsEditing: true,
+    });
+
+    if (!result.canceled) {
+      setImage(result.assets[0].uri);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Your Profile</Text>
@@ -10,16 +40,13 @@ export default function ProfileScreen() {
       <Text style={styles.subtitle}>Manage your account and preferences</Text>
 
       {/* Foto de perfil */}
-      <View style={[styles.card, styles.rowCard]}>
-        <Image
-          source={{ uri: 'https://static.vecteezy.com/system/resources/previews/034/371/675/non_2x/person-silhouette-icon-user-icon-vector.jpg' }}
-          style={styles.avatar}
-        />
+      <Pressable onPress={pickImage} style={[styles.card, styles.rowCard]}>
+        <Image source={{ uri: image }} style={styles.avatar} />
         <View style={styles.cardTextContainer}>
           <Text style={styles.cardTitle}>Profile Picture</Text>
-          <Text style={styles.cardSubtitle}>This is your current profile photo.</Text>
+          <Text style={styles.cardSubtitle}>Tap to change your photo</Text>
         </View>
-      </View>
+      </Pressable>
 
       {/* Nombre de usuario */}
       <View style={styles.card}>
@@ -39,6 +66,7 @@ export default function ProfileScreen() {
     </View>
   );
 }
+
 
 const styles = StyleSheet.create({
   container: {
