@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import {
   Alert,
   Image,
+  Platform,
   Pressable,
   StyleSheet,
   Text,
@@ -11,25 +12,76 @@ import {
 } from 'react-native';
 
 export default function ProfileScreen() {
-  const [image, setImage] = useState('https://static.vecteezy.com/system/resources/previews/034/371/675/non_2x/person-silhouette-icon-user-icon-vector.jpg');
+  const [image, setImage] = useState(
+    'https://static.vecteezy.com/system/resources/previews/034/371/675/non_2x/person-silhouette-icon-user-icon-vector.jpg'
+  );
 
   const pickImage = async () => {
-    // Pedir permisos si es necesario
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (status !== 'granted') {
-      Alert.alert('Permission denied', 'Permission to access media library is required!');
-      return;
-    }
+    if (Platform.OS === 'web') {
+      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (status !== 'granted') {
+        Alert.alert('Permission denied', 'Permission to access media library is required!');
+        return;
+      }
 
-    // Elegir imagen
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      quality: 1,
-      allowsEditing: true,
-    });
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        quality: 1,
+        allowsEditing: true,
+      });
 
-    if (!result.canceled) {
-      setImage(result.assets[0].uri);
+      if (!result.canceled) {
+        setImage(result.assets[0].uri);
+      }
+    } else {
+      Alert.alert(
+        'Choose an option',
+        'Select an image source',
+        [
+          {
+            text: 'Camera',
+            onPress: async () => {
+              const { status } = await ImagePicker.requestCameraPermissionsAsync();
+              if (status !== 'granted') {
+                Alert.alert('Permission denied', 'Camera permission is required!');
+                return;
+              }
+
+              const result = await ImagePicker.launchCameraAsync({
+                mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                quality: 1,
+                allowsEditing: true,
+              });
+
+              if (!result.canceled) {
+                setImage(result.assets[0].uri);
+              }
+            },
+          },
+          {
+            text: 'Gallery',
+            onPress: async () => {
+              const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+              if (status !== 'granted') {
+                Alert.alert('Permission denied', 'Permission to access media library is required!');
+                return;
+              }
+
+              const result = await ImagePicker.launchImageLibraryAsync({
+                mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                quality: 1,
+                allowsEditing: true,
+              });
+
+              if (!result.canceled) {
+                setImage(result.assets[0].uri);
+              }
+            },
+          },
+          { text: 'Cancel', style: 'cancel' },
+        ],
+        { cancelable: true }
+      );
     }
   };
 
@@ -66,7 +118,6 @@ export default function ProfileScreen() {
     </View>
   );
 }
-
 
 const styles = StyleSheet.create({
   container: {
