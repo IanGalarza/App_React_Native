@@ -1,3 +1,4 @@
+import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import {
   ActivityIndicator,
@@ -15,7 +16,7 @@ import { Game } from '../../types/rawg.types';
 export default function HomeScreen() {
   const [page, setPage] = useState(1);
   const { games, loading, error, pageInfo } = useGames(page, 10);
-
+  const router = useRouter();
   // Primeros 10 juegos para carrusel
   const featuredGames = games.slice(0, 10);
 
@@ -25,23 +26,31 @@ export default function HomeScreen() {
     }
   };
 
+  const goToDetail = (gameId: number) => {
+    router.push({
+      pathname: '/game/[gameId]',
+      params: { gameId: gameId.toString() }
+    });
+  };
+
   const renderFeaturedGame = ({ item }: { item: Game }) => (
-    <View style={styles.carouselItem}>
+    <TouchableOpacity onPress={() => goToDetail(item.id)} style={styles.carouselItem}>
       <Image source={{ uri: item.background_image }} style={styles.carouselImage} />
       <Text style={styles.gameTitle} numberOfLines={1}>{item.name}</Text>
-    </View>
+    </TouchableOpacity>
   );
 
   const renderGame = ({ item }: { item: Game }) => (
-    <View style={styles.listItem}>
+    <TouchableOpacity onPress={() => goToDetail(item.id)} style={styles.listItem}>
       <Image source={{ uri: item.background_image }} style={styles.listImage} />
       <View style={styles.listTextContainer}>
         <Text style={styles.gameTitle}>{item.name}</Text>
         <Text style={styles.gameInfo}>Rating: {item.rating.toFixed(1)}</Text>
         <Text style={styles.gameInfo}>Released: {item.released || 'N/A'}</Text>
       </View>
-    </View>
+    </TouchableOpacity>
   );
+
 
   const ListHeader = () => {
     const { width: windowWidth } = useWindowDimensions();
