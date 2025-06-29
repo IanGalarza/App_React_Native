@@ -19,9 +19,5 @@ export default function LocationMap({ latitude, longitude }: { latitude: number;
 }
 
 const styles = StyleSheet.create({
-  map: {
-    width: '100%',
-    height: 200,
-    marginBottom: 16,
-  },
+  map: { width: '100%', height: 200, marginBottom: 16 },
 });
