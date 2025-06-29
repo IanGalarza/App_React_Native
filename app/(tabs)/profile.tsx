@@ -1,4 +1,6 @@
+import LocationMap from '@/components/LocationMap';
 import { IconSymbol } from '@/components/ui/IconSymbol';
+import { useUserLocation } from '@/hooks/useUserLocation';
 import * as ImagePicker from 'expo-image-picker';
 import React, { useState } from 'react';
 import {
@@ -15,6 +17,7 @@ export default function ProfileScreen() {
   const [image, setImage] = useState(
     'https://static.vecteezy.com/system/resources/previews/034/371/675/non_2x/person-silhouette-icon-user-icon-vector.jpg'
   );
+  const { location, error: locationError } = useUserLocation();
 
   const pickImage = async () => {
     if (Platform.OS === 'web') {
@@ -115,6 +118,15 @@ export default function ProfileScreen() {
           <Text style={styles.cardValue}>user@example.com</Text>
         </View>
       </View>
+
+      {/* Ubicación */}
+      {location && (
+        <View style={styles.card}>
+          <Text style={styles.cardTitle}>Your Location</Text>
+          <LocationMap latitude={location.latitude} longitude={location.longitude} />
+        </View>
+      )}
+      {locationError && <Text style={styles.errorText}>{locationError}</Text>}
     </View>
   );
 }
@@ -188,5 +200,9 @@ const styles = StyleSheet.create({
   cardValue: {
     fontSize: 16,
     color: '#555',
+  },
+  errorText: {
+    color: 'red',
+    marginBottom: 10,
   },
 });
